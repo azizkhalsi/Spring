@@ -1,3 +1,4 @@
+// src/main/java/com/projet/tpachatproject/entities/SecteurActivite.java
 package com.projet.tpachatproject.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,17 +16,16 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SecteurActivite implements Serializable{
-	/**
-	 * 
-	 */
+public class SecteurActivite implements Serializable {
 	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idSecteurActivite;
 	private String codeSecteurActivite;
 	private String libelleSecteurActivite;
-	@ManyToMany(mappedBy="secteurActivites")
+
+	@ManyToMany(mappedBy = "secteurActivites")
 	@JsonIgnore
 	private Set<Fournisseur> fournisseurs;
 }
