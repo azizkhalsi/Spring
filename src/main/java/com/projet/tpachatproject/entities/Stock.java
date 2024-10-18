@@ -2,14 +2,12 @@ package com.projet.tpachatproject.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Set;
 
+@ToString
 @Entity
 @Getter
 @Setter
@@ -24,7 +22,7 @@ public class Stock implements Serializable {
 	private String libelleStock;
 	private Integer qte;
 	private Integer qteMin;
-	@OneToMany(mappedBy = "stock")
+	@OneToMany(mappedBy = "stock",fetch = FetchType.EAGER)
 	@JsonIgnore
 	private Set<Produit> produits;
 	public Stock(String libelleStock, Integer qte, Integer qteMin) {

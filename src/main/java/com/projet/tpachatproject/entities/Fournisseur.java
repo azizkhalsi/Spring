@@ -1,4 +1,3 @@
-// src/main/java/com/projet/tpachatproject/entities/Fournisseur.java
 package com.projet.tpachatproject.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -28,16 +27,20 @@ public class Fournisseur implements Serializable {
 	private String libelle;
 
 	@Enumerated(EnumType.STRING)
-	private CategorieFournisseur categorieFournisseur;
+	private CategorieFournisseur  categorieFournisseur;
 
-	@OneToMany(mappedBy = "fournisseur")
+	@OneToMany(mappedBy="fournisseur")
 	@JsonIgnore
-	private Set<Facture> factures = new HashSet<>();
+	private Set<Facture> factures;
 
-	@ManyToMany
-	@JsonIgnore
-	private Set<SecteurActivite> secteurActivites = new HashSet<>();
+    @ManyToMany
+    @JsonIgnore
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private DetailFournisseur detailFournisseur;
+    private Set<SecteurActivite> secteurActivites= new HashSet<>();
+  
+    @OneToOne(cascade= CascadeType.ALL,fetch=FetchType.EAGER)
+    private DetailFournisseur detailFournisseur;
+    
+
+	
 }

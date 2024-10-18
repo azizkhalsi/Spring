@@ -18,6 +18,7 @@ public class StockServiceImplTest {
 	public void testAddStock() {
 	//	List<Stock> stocks = stockService.retrieveAllStocks();
 	//	int expected=stocks.size();
+
 		Stock s = new Stock("stock test",10,100);
 		Stock savedStock= stockService.addStock(s);
 		
@@ -29,9 +30,13 @@ public class StockServiceImplTest {
 	
 	@Test
 	public void testAddStockOptimized() {
-
+		//arrange
 		Stock s = new Stock("stock test",10,100);
+
+		//act
 		Stock savedStock= stockService.addStock(s);
+
+		//assert
 		assertNotNull(savedStock.getIdStock());
 		assertSame(10, savedStock.getQte());
 		assertTrue(savedStock.getQteMin()>0);

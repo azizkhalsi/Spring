@@ -1,5 +1,5 @@
-// src/main/java/com/projet/tpachatproject/services/IFournisseurService.java
 package com.projet.tpachatproject.services;
+
 
 import com.projet.tpachatproject.entities.Fournisseur;
 
@@ -16,6 +16,7 @@ public interface IFournisseurService {
 	Fournisseur updateFournisseur(Fournisseur f);
 
 	Fournisseur retrieveFournisseur(Long id);
-
+	
 	void assignSecteurActiviteToFournisseur(Long idSecteurActivite, Long idFournisseur);
+
 }

@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ProduitServiceImpl implements IProduitService {
 
-
+ 	IStockService stockService;
 	ProduitRepository produitRepository;
 	StockRepository stockRepository;
 	CategorieProduitRepository categorieProduitRepository;
@@ -66,6 +66,19 @@ public class ProduitServiceImpl implements IProduitService {
 		produit.setStock(stock);
 		produitRepository.save(produit);
 
+	}
+
+	@Override
+	public boolean verifierDates(Produit produit) {
+			return produit.getDateCreation().before(produit.getDateDerniereModification());
+	}
+	@Override
+	public List<Produit> findByStock(Stock stock) {
+
+
+		List<Produit> produits = produitRepository.findByStock(stock);
+
+		return produits ;
 	}
 
 

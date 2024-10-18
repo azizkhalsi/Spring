@@ -24,6 +24,7 @@ public class Operateur implements Serializable{
 	private String nom;
 	private String prenom;
 	private String password;
+
 	@OneToMany
 	@JsonIgnore
 	private Set<Facture> factures;

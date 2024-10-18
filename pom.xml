@@ -39,6 +39,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <version>3.1.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.3.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -74,6 +81,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>tpAchatBuild</finalName>
     </build>
 
 </project>

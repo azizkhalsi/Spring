@@ -1,332 +1,199 @@
-// src/test/java/com/projet/tpachatproject/services/FactureServiceImplTest.java
 package com.projet.tpachatproject.services;
 
-import com.projet.tpachatproject.entities.*;
-import com.projet.tpachatproject.repositories.*;
+import com.projet.tpachatproject.entities.CategorieProduit;
+import com.projet.tpachatproject.entities.DetailFacture;
+import com.projet.tpachatproject.entities.Facture;
+import com.projet.tpachatproject.entities.Produit;
+import com.projet.tpachatproject.repositories.FactureRepository;
+import com.projet.tpachatproject.services.FactureServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class FactureServiceImplTest {
+public class FactureServiceImplTest{
 
     @Mock
     private FactureRepository factureRepository;
 
-    @Mock
-    private OperateurRepository operateurRepository;
-
-    @Mock
-    private DetailFactureRepository detailFactureRepository;
-
-    @Mock
-    private FournisseurRepository fournisseurRepository;
-
-    @Mock
-    private ProduitRepository produitRepository;
-
-    @Mock
-    private ReglementServiceImpl reglementService;
-
     @InjectMocks
     private FactureServiceImpl factureService;
 
-    private Produit produit;
-    private Fournisseur fournisseur;
-    private Facture facture;
-    private DetailFacture detail;
+    private Facture testFacture;
+    private Set<DetailFacture> detailFactures;
+    private Produit regularProduct;
+    private Produit premiumProduct;
+    private CategorieProduit regularCategory;
+    private CategorieProduit premiumCategory;
 
     @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        // Set up test data
+        regularCategory = new CategorieProduit();
+        regularCategory.setLibelleCategorie("REGULAR");
 
-        // Initialize Produit
-        produit = new Produit();
-        produit.setIdProduit(1L);
-        produit.setNom("Produit Unique");
-        produit.setPrix(150.0f);
+        premiumCategory = new CategorieProduit();
+        premiumCategory.setLibelleCategorie("PREMIUM");
 
-        // Initialize Fournisseur
-        fournisseur = new Fournisseur();
-        fournisseur.setIdFournisseur(1L);
-        fournisseur.setCode("F001");
-        fournisseur.setLibelle("Fournisseur Unique");
-        fournisseur.setCategorieFournisseur(CategorieFournisseur.ORDINAIRE);
-        fournisseur.setSecteurActivites(new HashSet<>());
+        regularProduct = new Produit();
+        regularProduct.setCategorieProduit(regularCategory);
 
-        // Initialize Facture
-        facture = new Facture();
-        facture.setIdFacture(1L);
-        facture.setMontantFacture(0.0f);
-        facture.setMontantRemise(0.0f);
-        facture.setDateCreationFacture(new Date());
-        facture.setDateDerniereModificationFacture(new Date());
-        facture.setArchivee(false);
-        facture.setDetailsFacture(new LinkedHashSet<>()); // Preserve order
-        facture.setFournisseur(fournisseur);
-        facture.setReglements(new HashSet<>());
+        premiumProduct = new Produit();
+        premiumProduct.setCategorieProduit(premiumCategory);
 
-        // Initialize DetailFacture
-        detail = new DetailFacture();
-        detail.setIdDetailFacture(1L);
-        detail.setProduit(produit);
-        detail.setQteCommandee(3); // Quantity ordered
-        detail.setPourcentageRemise(15); // 15% discount
-        detail.setFacture(facture);
-
-        // Assign detail to facture
-        facture.getDetailsFacture().add(detail);
+        detailFactures = new HashSet<>();
+        testFacture = new Facture();
+        testFacture.setDetailsFacture(detailFactures);
+        testFacture.setMontantRemise(0f);
+        testFacture.setDateCreationFacture(new Date());
     }
 
-    /**
-     * Test the addFacture method to ensure that montantFacture and montantRemise are correctly calculated.
-     */
     @Test
-    public void testAddFacture_CalculationsAreCorrect() {
-        // Arrange
-        when(produitRepository.findById(produit.getIdProduit())).thenReturn(Optional.of(produit));
+    void testApplySpecialDiscounts_VolumeDiscount() {
 
-        // Mock saving of DetailFacture
-        when(detailFactureRepository.save(any(DetailFacture.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Mock saving of Facture
-        when(factureRepository.save(any(Facture.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Act
-        Facture savedFacture = factureService.addFacture(facture);
+        testFacture.setMontantFacture(2000f);
+        when(factureRepository.save(any(Facture.class))).thenReturn(testFacture);
 
-        // Assert
-        // Verify produitRepository.findById called once
-        verify(produitRepository, times(1)).findById(produit.getIdProduit());
 
-        // Verify detailFactureRepository.save called once
-        verify(detailFactureRepository, times(1)).save(any(DetailFacture.class));
+        Facture result = factureService.applySpecialDiscounts(testFacture);
 
-        // Verify factureRepository.save called once
-        verify(factureRepository, times(1)).save(any(Facture.class));
 
-        // Calculate expected values
-        // Detail: 3 * 150 = 450 - 15% = 382.5
-        // Total montantFacture = 382.5
-        // Total montantRemise = 67.5
+        float expectedDiscount = 100f;
+        float expectedFinalAmount = 1900f;
+        System.out.println("Expectedd discount: " + expectedDiscount);
+        System.out.println("Actual discount: " + result.getMontantRemise());
+        System.out.println("Expected final amount: " + expectedFinalAmount);
+        System.out.println("Actual final amount: " + result.getMontantFacture());
 
-        assertEquals(382.5f, savedFacture.getMontantFacture(), 0.001, "Montant Facture should be correctly calculated");
-        assertEquals(67.5f, savedFacture.getMontantRemise(), 0.001, "Montant Remise should be correctly calculated");
-
-        // Verify individual detail calculations
-        DetailFacture savedDetail = savedFacture.getDetailsFacture().iterator().next();
-        assertEquals(382.5f, savedDetail.getPrixTotalDetail(), 0.001, "Prix Total Detail should be correctly calculated");
-        assertEquals(67.5f, savedDetail.getMontantRemise(), 0.001, "Montant Remise should be correctly calculated");
+        assertEquals(expectedDiscount, result.getMontantRemise(), 0.01f);
+        assertEquals(expectedFinalAmount, result.getMontantFacture(), 0.01f);
+        verify(factureRepository).save(testFacture);
     }
 
-    /**
-     * Test the addFacture method to ensure it throws an exception when a Produit is not found.
-     */
     @Test
-    public void testAddFacture_ProduitNotFound_ThrowsException() {
-        // Arrange
-        // Mock produitRepository.findById to return empty, simulating missing produit
-        when(produitRepository.findById(produit.getIdProduit())).thenReturn(Optional.empty());
+    void testApplySpecialDiscounts_AllRulesCombined() {
 
-        // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            factureService.addFacture(facture);
-        }, "Expected RuntimeException for non-existent Produit");
+        testFacture.setMontantFacture(2000f);
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+        testFacture.setDateCreationFacture(cal.getTime());
 
-        assertEquals("Produit not found with ID: " + produit.getIdProduit(), exception.getMessage(),
-                "Exception message should indicate Produit not found");
+        for (int i = 0; i < 6; i++) {
+            DetailFacture detail = new DetailFacture();
+            detail.setProduit(i < 5 ? regularProduct : premiumProduct);
+            detailFactures.add(detail);
+        }
 
-        // Verify interactions
-        verify(produitRepository, times(1)).findById(produit.getIdProduit());
-        verify(detailFactureRepository, times(0)).save(any(DetailFacture.class));
-        verify(factureRepository, times(0)).save(any(Facture.class));
+
+        when(factureRepository.save(any(Facture.class))).thenReturn(testFacture);
+        Facture result = factureService.applySpecialDiscounts(testFacture);
+
+        float expectedDiscount = 180f;
+        float expectedFinalAmount = 1820f;
+        System.out.println("Expected total discount: " + expectedDiscount);
+        System.out.println("Actual total discount: " + result.getMontantRemise());
+        System.out.println("Expected final amount: " + expectedFinalAmount);
+        System.out.println("Actual final amount: " + result.getMontantFacture());
+
+        assertEquals(expectedDiscount, result.getMontantRemise(), 0.01f);
+        assertEquals(expectedFinalAmount, result.getMontantFacture(), 0.01f);
+        verify(factureRepository).save(testFacture);
     }
 
-    /**
-     * Test the cancelFacture method to ensure that a facture is correctly archived.
-     */
     @Test
-    public void testCancelFacture_ArchivesFacture() {
-        // Arrange
-        Long factureId = facture.getIdFacture();
-        when(factureRepository.findById(factureId)).thenReturn(Optional.of(facture));
-        when(factureRepository.save(any(Facture.class))).thenAnswer(invocation -> invocation.getArgument(0));
+    void testApplySpecialDiscounts_QuantityDiscount() {
+        testFacture.setMontantFacture(500f);
 
-        // Act
-        factureService.cancelFacture(factureId);
 
-        // Assert
-        // Capture the Facture object saved
-        ArgumentCaptor<Facture> factureCaptor = ArgumentCaptor.forClass(Facture.class);
-        verify(factureRepository, times(1)).findById(factureId);
-        verify(factureRepository, times(1)).save(factureCaptor.capture());
+        for (int i = 0; i < 6; i++) {
+            DetailFacture detail = new DetailFacture();
+            detail.setProduit(regularProduct);
+            detailFactures.add(detail);
+        }
 
-        Facture savedFacture = factureCaptor.getValue();
-        assertTrue(savedFacture.getArchivee(), "Facture should be archived");
+
+        when(factureRepository.save(any(Facture.class))).thenReturn(testFacture);
+
+        Facture result = factureService.applySpecialDiscounts(testFacture);
+
+        float expectedDiscount = 10f;
+        float expectedFinalAmount = 490f;
+        System.out.println("Expected discount: " + expectedDiscount);
+        System.out.println("Actual discount: " + result.getMontantRemise());
+        System.out.println("Expected final amount: " + expectedFinalAmount);
+        System.out.println("Actual final amount: " + result.getMontantFacture());
+
+        assertEquals(expectedDiscount, result.getMontantRemise(), 0.01f);
+        assertEquals(expectedFinalAmount, result.getMontantFacture(), 0.01f);
+        verify(factureRepository).save(testFacture);
     }
 
-    /**
-     * Test the retrieveFacture method to ensure it retrieves an existing facture.
-     */
     @Test
-    public void testRetrieveFacture_FactureExists_ReturnsFacture() {
-        // Arrange
-        Long factureId = facture.getIdFacture();
-        when(factureRepository.findById(factureId)).thenReturn(Optional.of(facture));
+    void testApplySpecialDiscounts_WeekendDiscount() {
 
-        // Act
-        Facture retrievedFacture = factureService.retrieveFacture(factureId);
+        testFacture.setMontantFacture(1000f);
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+        testFacture.setDateCreationFacture(cal.getTime());
 
-        // Assert
-        assertNotNull(retrievedFacture, "Retrieved Facture should not be null");
-        assertEquals(factureId, retrievedFacture.getIdFacture(), "Facture ID should match");
-        verify(factureRepository, times(1)).findById(factureId);
+        when(factureRepository.save(any(Facture.class))).thenReturn(testFacture);
+        Facture result = factureService.applySpecialDiscounts(testFacture);
+
+        float expectedDiscount = 30f;
+        float expectedFinalAmount = 970f;
+        System.out.println("Expected weekend discount: " + expectedDiscount);
+        System.out.println("Actual discount: " + result.getMontantRemise());
+        System.out.println("Expected final amount: " + expectedFinalAmount);
+        System.out.println("Actual final amount: " + result.getMontantFacture());
+
+        assertEquals(expectedDiscount, result.getMontantRemise(), 0.01f);
+        assertEquals(expectedFinalAmount, result.getMontantFacture(), 0.01f);
+        verify(factureRepository).save(testFacture);
     }
 
-    /**
-     * Test the retrieveFacture method when the facture does not exist.
-     */
+
     @Test
-    public void testRetrieveFacture_FactureDoesNotExist_ReturnsNull() {
-        // Arrange
-        Long invalidFactureId = 999L;
-        when(factureRepository.findById(invalidFactureId)).thenReturn(Optional.empty());
+    void testApplySpecialDiscounts_PremiumCategoryAdjustment() {
 
-        // Act
-        Facture retrievedFacture = factureService.retrieveFacture(invalidFactureId);
+        testFacture.setMontantFacture(2000f);
+        DetailFacture premiumDetail = new DetailFacture();
+        premiumDetail.setProduit(premiumProduct);
+        detailFactures.add(premiumDetail);
 
-        // Assert
-        assertNull(retrievedFacture, "Retrieved Facture should be null for non-existent ID");
-        verify(factureRepository, times(1)).findById(invalidFactureId);
+
+        when(factureRepository.save(any(Facture.class))).thenReturn(testFacture);
+
+        Facture result = factureService.applySpecialDiscounts(testFacture);
+
+        float volumeDiscount = 100f;
+        float premiumAdjustment = 20f;
+        float expectedNetDiscount = 80f;
+        float expectedFinalAmount = 1920f;
+
+        System.out.println("Expected volume discount: " + volumeDiscount);
+        System.out.println("Expected premium adjustment: -" + premiumAdjustment);
+        System.out.println("Expected net discount: " + expectedNetDiscount);
+        System.out.println("Actual discount: " + result.getMontantRemise());
+        System.out.println("Expected final amount: " + expectedFinalAmount);
+        System.out.println("Actual final amount: " + result.getMontantFacture());
+
+        assertEquals(expectedNetDiscount, result.getMontantRemise(), 0.01f);
+        assertEquals(expectedFinalAmount, result.getMontantFacture(), 0.01f);
+        verify(factureRepository).save(testFacture);
     }
 
-    /**
-     * Test the getFacturesByFournisseur method to ensure it retrieves factures associated with a fournisseur.
-     */
-    @Test
-    public void testGetFacturesByFournisseur_ReturnsList() {
-        // Arrange
-        Long fournisseurId = fournisseur.getIdFournisseur();
-        Set<Facture> factures = new LinkedHashSet<>();
-        factures.add(facture);
-        fournisseur.setFactures(factures);
 
-        when(fournisseurRepository.findById(fournisseurId)).thenReturn(Optional.of(fournisseur));
-        when(factureRepository.findByFournisseur(fournisseur)).thenReturn(new ArrayList<>(factures));
 
-        // Act
-        List<Facture> retrievedFactures = factureService.getFacturesByFournisseur(fournisseurId);
-
-        // Assert
-        assertNotNull(retrievedFactures, "Retrieved Factures should not be null");
-        assertEquals(1, retrievedFactures.size(), "Should retrieve exactly one Facture");
-        assertTrue(retrievedFactures.contains(facture), "Retrieved Facture should match the mock");
-        verify(fournisseurRepository, times(1)).findById(fournisseurId);
-        verify(factureRepository, times(1)).findByFournisseur(fournisseur);
-    }
-
-    /**
-     * Test the assignOperateurToFacture method to ensure an operateur is correctly assigned to a facture.
-     */
-    @Test
-    public void testAssignOperateurToFacture_Success() {
-        // Arrange
-        Long operateurId = 1L;
-        Long factureId = facture.getIdFacture();
-        Operateur operateur = new Operateur();
-        operateur.setIdOperateur(operateurId);
-        operateur.setNom("Operateur Unique");
-        operateur.setFactures(new HashSet<>());
-
-        when(factureRepository.findById(factureId)).thenReturn(Optional.of(facture));
-        when(operateurRepository.findById(operateurId)).thenReturn(Optional.of(operateur));
-        when(operateurRepository.save(any(Operateur.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        // Act
-        factureService.assignOperateurToFacture(operateurId, factureId);
-
-        // Assert
-        verify(factureRepository, times(1)).findById(factureId);
-        verify(operateurRepository, times(1)).findById(operateurId);
-        verify(operateurRepository, times(1)).save(any(Operateur.class));
-
-        assertTrue(operateur.getFactures().contains(facture), "Operateur should be assigned to Facture");
-    }
-
-    /**
-     * Test the pourcentageRecouvrement method to ensure the percentage is correctly calculated.
-     */
-    @Test
-    public void testPourcentageRecouvrement_CalculatesCorrectly() {
-        // Arrange
-        Date startDate = new GregorianCalendar(2024, Calendar.MARCH, 1).getTime();
-        Date endDate = new GregorianCalendar(2024, Calendar.MARCH, 31).getTime();
-
-        float totalFactures = 1200.0f;
-        float totalRecouvrement = 900.0f;
-
-        when(factureRepository.getTotalFacturesEntreDeuxDates(startDate, endDate)).thenReturn(totalFactures);
-        when(reglementService.getChiffreAffaireEntreDeuxDate(startDate, endDate)).thenReturn(totalRecouvrement);
-
-        // Act
-        float pourcentage = factureService.pourcentageRecouvrement(startDate, endDate);
-
-        // Assert
-        assertEquals(75.0f, pourcentage, 0.001, "Pourcentage de recouvrement devrait être de 75%");
-        verify(factureRepository, times(1)).getTotalFacturesEntreDeuxDates(startDate, endDate);
-        verify(reglementService, times(1)).getChiffreAffaireEntreDeuxDate(startDate, endDate);
-    }
-
-    /**
-     * Test the pourcentageRecouvrement method when totalFactures is zero to prevent division by zero.
-     */
-    @Test
-    public void testPourcentageRecouvrement_TotalFacturesZero_ReturnsZero() {
-        // Arrange
-        Date startDate = new GregorianCalendar(2024, Calendar.APRIL, 1).getTime();
-        Date endDate = new GregorianCalendar(2024, Calendar.APRIL, 30).getTime();
-
-        float totalFactures = 0.0f;
-        float totalRecouvrement = 0.0f;
-
-        when(factureRepository.getTotalFacturesEntreDeuxDates(startDate, endDate)).thenReturn(totalFactures);
-        when(reglementService.getChiffreAffaireEntreDeuxDate(startDate, endDate)).thenReturn(totalRecouvrement);
-
-        // Act
-        float pourcentage = factureService.pourcentageRecouvrement(startDate, endDate);
-
-        // Assert
-        assertEquals(0.0f, pourcentage, 0.001, "Pourcentage de recouvrement devrait être de 0% lorsqu'il n'y a pas de factures");
-        verify(factureRepository, times(1)).getTotalFacturesEntreDeuxDates(startDate, endDate);
-        verify(reglementService, times(1)).getChiffreAffaireEntreDeuxDate(startDate, endDate);
-    }
-
-    /**
-     * Test the addFacture method to ensure no calculations are performed when there are no DetailFactures.
-     */
-    @Test
-    public void testAddFacture_NoDetailFacture_SetsMontantZero() {
-        // Arrange
-        facture.setDetailsFacture(new LinkedHashSet<>()); // Clear details
-        when(factureRepository.save(any(Facture.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        // Act
-        Facture savedFacture = factureService.addFacture(facture);
-
-        // Assert
-        assertEquals(0.0f, savedFacture.getMontantFacture(), 0.001, "Montant Facture should be zero when there are no DetailFactures");
-        assertEquals(0.0f, savedFacture.getMontantRemise(), 0.001, "Montant Remise should be zero when there are no DetailFactures");
-        verify(detailFactureRepository, times(0)).save(any(DetailFacture.class));
-        verify(factureRepository, times(1)).save(any(Facture.class));
-    }
 }
