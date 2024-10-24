@@ -26,6 +26,8 @@ public class CategorieProduit implements Serializable {
 	private Long idCategorieProduit;
 	private String codeCategorie;
 	private String libelleCategorie;
+
+	// relations
 	@OneToMany(mappedBy = "categorieProduit")
 	@JsonIgnore
 	private Set<Produit> produits;

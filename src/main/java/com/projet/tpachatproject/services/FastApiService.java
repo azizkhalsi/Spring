@@ -12,7 +12,7 @@ public class FastApiService {
     private final WebClient webClient;
 
     // URL de votre API FastAPI
-    private final String FASTAPI_URL = "http://localhost:8000/predict";
+    private  String fastApiUrl = "http://localhost:8000/predict";
 
     public FastApiService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.build();
@@ -21,7 +21,7 @@ public class FastApiService {
     // Méthode pour envoyer une requête à l'API FastAPI
     public Mono<PredictionResponse> predict(PredictionRequest request) {
         return webClient.post()
-                .uri(FASTAPI_URL)
+                .uri(fastApiUrl)
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(PredictionResponse.class);

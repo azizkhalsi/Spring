@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -70,11 +71,41 @@ public class ProduitServiceImpl implements IProduitService {
 
 	@Override
 	public boolean verifierDates(Produit produit) {
-			return produit.getDateCreation().before(produit.getDateDerniereModification());
+		Date dateCreation = produit.getDateCreation();
+		Date dateModification = produit.getDateDerniereModification();
+
+		// 1. Vérification si la date de création ou de modification est nulle
+		if (dateCreation == null || dateModification == null) {
+			return false;
+		}
+
+		// 2. Vérification si la date de modification est après la date de création
+		if (dateModification.before(dateCreation)) {
+			return false;
+		}
+
+		// 3. Vérification si la date de modification est dans le futur
+		Date today = new Date();
+		if (dateModification.after(today)) {
+			return false;
+		}
+
+		// 4. Vérification si la modification est dans les 30 jours suivant la création
+		long diffInMillies = Math.abs(dateModification.getTime() - dateCreation.getTime());
+		long diffInDays = diffInMillies / (1000 * 60 * 60 * 24);
+		if (diffInDays > 30) {
+			return false;
+		}
+
+
+
+		// Si toutes les validations passent
+		return true;
 	}
+
+
 	@Override
 	public List<Produit> findByStock(Stock stock) {
-
 
 		List<Produit> produits = produitRepository.findByStock(stock);
 
