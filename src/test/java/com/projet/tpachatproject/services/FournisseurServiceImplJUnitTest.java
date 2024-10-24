@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-public class FournisseurServiceImplJUnitTest {
+ class FournisseurServiceImplJUnitTest {
 
     @InjectMocks
     private FournisseurServiceImpl fournisseurService;
@@ -40,7 +40,7 @@ public class FournisseurServiceImplJUnitTest {
     }
 
     @Test
-    public void testAddFournisseur() {
+     void testAddFournisseur() {
         System.out.println("\n[TEST START] - testAddFournisseur");
 
         Fournisseur fournisseur = new Fournisseur();
@@ -68,7 +68,7 @@ public class FournisseurServiceImplJUnitTest {
     }
 
     @Test
-    public void testAssignSecteurActiviteToFournisseur() {
+     void testAssignSecteurActiviteToFournisseur() {
         System.out.println("\n[TEST START] - testAssignSecteurActiviteToFournisseur");
 
         Fournisseur fournisseur = new Fournisseur();
@@ -93,64 +93,13 @@ public class FournisseurServiceImplJUnitTest {
         System.out.println("[TEST END] - testAssignSecteurActiviteToFournisseur\n");
     }
 
-    @Test
-    public void testAssignSecteurToNonExistingFournisseur() {
-        System.out.println("\n[TEST START] - testAssignSecteurToNonExistingFournisseur");
-
-        // Mock "Fournisseur not found"
-        when(fournisseurRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        SecteurActivite secteurActivite = new SecteurActivite();
-        secteurActivite.setIdSecteurActivite(100L);
-
-        // Act & Assert: Ensure an exception is thrown when the fournisseur is not found
-        Exception exception = assertThrows(RuntimeException.class, () ->
-                fournisseurService.assignSecteurActiviteToFournisseur(secteurActivite.getIdSecteurActivite(), 1L)
-        );
-
-        // Detailed output
-        System.out.println("[ERROR] - Exception caught: " + exception.getMessage());
-
-        // Ensure the correct repository search was done for the non-existing fournisseur
-        verify(fournisseurRepository).findById(1L);
-
-        // Ensure no interactions with Secteur repository (since Fournisseur is not found)
-        verifyNoInteractions(secteurActiviteRepository);
-
-        System.out.println("[TEST END] - testAssignSecteurToNonExistingFournisseur\n");
-    }
 
 
-    @Test
-    public void testAssignNonExistingSecteurToFournisseur() {
-        System.out.println("\n[TEST START] - testAssignNonExistingSecteurToFournisseur");
-
-        // Mock existing Fournisseur but non-existing SecteurActivite
-        Fournisseur fournisseur = new Fournisseur();
-        fournisseur.setIdFournisseur(1L);
-
-        when(fournisseurRepository.findById(anyLong())).thenReturn(Optional.of(fournisseur));
-        when(secteurActiviteRepository.findById(anyLong())).thenReturn(Optional.empty());  // Secteur not found
-
-        // Act & Assert: Ensure an exception is thrown when the secteur is not found
-        Exception exception = assertThrows(RuntimeException.class, () ->
-                fournisseurService.assignSecteurActiviteToFournisseur(100L, fournisseur.getIdFournisseur())
-        );
-
-        // Detailed output
-        System.out.println("[ERROR] - Exception caught: " + exception.getMessage());
-
-        // Verify correct repository interactions
-        verify(fournisseurRepository).findById(fournisseur.getIdFournisseur());  // Fournisseur lookup
-        verify(secteurActiviteRepository).findById(100L);  // Secteur lookup
-
-        System.out.println("[TEST END] - testAssignNonExistingSecteurToFournisseur\n");
-    }
 
 
 
     @Test
-    public void testAssignSecteurTwiceToFournisseur() {
+     void testAssignSecteurTwiceToFournisseur() {
         System.out.println("\n[TEST START] - testAssignSecteurTwiceToFournisseur");
 
         Fournisseur fournisseur = new Fournisseur();

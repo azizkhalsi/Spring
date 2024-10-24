@@ -35,9 +35,9 @@ public class Fournisseur implements Serializable {
 
     @ManyToMany
     @JsonIgnore
-
     private Set<SecteurActivite> secteurActivites= new HashSet<>();
-  
+
+
     @OneToOne(cascade= CascadeType.ALL,fetch=FetchType.EAGER)
     private DetailFournisseur detailFournisseur;
     

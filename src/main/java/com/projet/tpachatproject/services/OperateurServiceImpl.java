@@ -4,7 +4,6 @@ package com.projet.tpachatproject.services;
 import com.projet.tpachatproject.entities.Operateur;
 import com.projet.tpachatproject.repositories.OperateurRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 public class OperateurServiceImpl implements IOperateurService {
 
-	@Autowired
-	OperateurRepository operateurRepository;
+	private final OperateurRepository operateurRepository;
+
 	@Override
 	public List<Operateur> retrieveAllOperateurs() {
 		return (List<Operateur>) operateurRepository.findAll();
@@ -33,15 +32,15 @@ public class OperateurServiceImpl implements IOperateurService {
 	}
 
 	@Override
-	public Operateur updateOperateur(Operateur o) {
-		operateurRepository.save(o);
-		return o;
+	public Operateur updateOperateur(Operateur o1) {
+		operateurRepository.save(o1);
+		return o1;
 	}
 
 	@Override
 	public Operateur retrieveOperateur(Long id) {
-		Operateur operateur = operateurRepository.findById(id).orElse(null);
-		return operateur;
+		return operateurRepository.findById(id).orElse(null);
+
 	}
 
 }

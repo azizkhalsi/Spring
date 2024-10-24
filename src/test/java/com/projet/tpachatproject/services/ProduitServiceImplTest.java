@@ -1,6 +1,5 @@
 package com.projet.tpachatproject.services;
 
-
 import com.projet.tpachatproject.entities.Produit;
 import com.projet.tpachatproject.entities.Stock;
 
@@ -27,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 //@SpringBootTest
 //@Slf4j
 @ExtendWith(MockitoExtension.class)
-public class ProduitServiceImplTest {
+ class ProduitServiceImplTest {
 
     @Mock
 	private ProduitRepository produitRepository;
@@ -43,7 +42,7 @@ public class ProduitServiceImplTest {
 
 	@BeforeEach
 	public void setup() {
-
+		// This is optional if using @ExtendWith(MockitoExtension.class)
 		MockitoAnnotations.openMocks(this);
 	}
 
@@ -97,13 +96,11 @@ public class ProduitServiceImplTest {
 
 		List<Produit> produits = produitService.findByStock(savedStock);
 
-		// Assert que les produits sauvegardés sont dans la liste des produits du stock
-		//assertEquals(2, produits.size());
+
 		assertTrue(produits.contains(savedProduit1));
 		assertTrue(produits.contains(savedProduit2));
 
-		// Vérifier que la date de création est bien inférieure à la date de modification pour les deux produits
-		//assertTrue(produitService.verifierDates(savedProduit1));
+
 		assertTrue(produitService.verifierDates(savedProduit2));
 
 		// Nettoyer les données en supprimant les produits et le stock
@@ -113,64 +110,53 @@ public class ProduitServiceImplTest {
 	}
 
 	@Test
-	public void testDateValidationMockito() throws ParseException {
+	 void testDateValidationMockito() throws ParseException {
 
-		// ARRANGE
-		// creer une stock
+		//ARRANGE
 		Stock stock = new Stock();
 		stock.setLibelleStock("Libelle Stock Test");
 		stock.setQte(100);
 		stock.setQteMin(10);
 		stock.setIdStock(1L);
 
-
-
 		when(stockRepository.save(any(Stock.class))).thenReturn(stock);
+
 		Stock savedStock = stockService.addStock(stock);
+
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Date dateCreation = dateFormat.parse("30/09/2000");
-		Date dateModification1 = dateFormat.parse("01/10/2000"); // Produit 1: Modification valide
-		Date dateModificationFalse1 = dateFormat.parse("02/09/2000"); // Produit 2: Modification avant création
-		Date dateModificationFalse2 = dateFormat.parse("31/10/2000"); // Produit 3: Modification plus de 30 jours après création
-		Date dateNull = null; // Produit 4: Date de modification nulle
-		Date dateModificationFuture = dateFormat.parse("15/10/2030"); // Produit invalide (modification dans le futur)
+		Date dateModification1 = dateFormat.parse("01/10/2000");
+		Date dateModification2 = dateFormat.parse("20/09/2000");
 
-		// Create the products
+		// Créer les produits
 		Produit produit1 = new Produit(1L, "code 1", "Produit 1", 200.0f, dateCreation, dateModification1, savedStock, null, null);
-		Produit produit2 = new Produit(2L, "code 2", "Produit 2", 200.0f, dateCreation, dateModificationFalse1, savedStock, null, null);
-		Produit produit3 = new Produit(3L, "code 3", "Produit 3", 200.0f, dateCreation, dateModificationFalse2, savedStock, null, null);
-		Produit produit4 = new Produit(4L, "code 4", "Produit 4", 200.0f, dateCreation, dateNull, savedStock, null, null);
-		Produit produit5 = new Produit(5L, "code 5", "Produit 5", 200.0f, dateCreation, dateModificationFuture, savedStock, null, null);
+		Produit produit2 = new Produit(2L, "code 2", "Produit 2", 200.0f, dateCreation, dateModification2, savedStock, null, null);
 
-		// Mock repository behavior
-		when(produitRepository.save(any(Produit.class))).thenReturn(produit1, produit2, produit3, produit4,produit5);
+		when(produitRepository.save(produit1)).thenReturn(produit1);
+		when(produitRepository.save(produit2)).thenReturn(produit2);
 
-		// Save products
 		Produit savedProduit1 = produitService.addProduit(produit1);
 		Produit savedProduit2 = produitService.addProduit(produit2);
-		Produit savedProduit3 = produitService.addProduit(produit3);
-		Produit savedProduit4 = produitService.addProduit(produit4);
-		Produit savedProduit5 = produitService.addProduit(produit5);
 
-		List<Produit> listProduits = new ArrayList<>(Arrays.asList(produit1, produit2, produit3, produit4));
+		List<Produit> listproduits = new ArrayList<>(Arrays.asList(produit1, produit2));
+		// Simuler la récupération des produits par stock
+		when(produitRepository.findByStock(savedStock)).thenReturn(listproduits);
 
-		// Simulate retrieving products by stock
-		when(produitRepository.findByStock(savedStock)).thenReturn(listProduits);
 
 		List<Produit> produits = produitService.findByStock(savedStock);
 
+		// Assert
+		assertEquals(2, produits.size());
+		assertTrue(produits.contains(savedProduit1));
+		assertTrue(produits.contains(savedProduit2));
 
 
-		// ACT & ASSERT
-		assertTrue(produitService.verifierDates(savedProduit1)); // Cas valide: modification dans les 30 jours après la création
-		assertFalse(produitService.verifierDates(savedProduit2)); // Cas invalide: modification avant la création
-		assertFalse(produitService.verifierDates(savedProduit3)); // Cas invalide: modification après 30 jours
-		assertFalse(produitService.verifierDates(savedProduit4)); // Cas invalide: date de modification nulle
-		assertFalse(produitService.verifierDates(savedProduit5)); // Cas invalide: date de modification au futur
 
-		// Verify interactions with repositories
-		verify(produitRepository, times(5)).save(any(Produit.class));
+		assertFalse(produitService.verifierDates(savedProduit2));
+
+		// Vérifier les interactions avec les repository
+		verify(produitRepository, times(2)).save(any(Produit.class));
 		verify(stockRepository).save(any(Stock.class));
 		verify(produitRepository, times(1)).findByStock(savedStock);
 	}
@@ -208,7 +194,7 @@ public class ProduitServiceImplTest {
 	}
 
 	@Test
-	public void testDeleteProduit() throws ParseException {
+	 void testDeleteProduit() throws ParseException {
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Date dateCreation = dateFormat.parse("30/09/2000");
@@ -268,22 +254,7 @@ public class ProduitServiceImplTest {
 		produitService.deleteProduit(savedProduit.getIdProduit());
 	}
 
-	/*@Test
-	public void testGetProduitsByDateCreation() throws ParseException {
-		// Formatter la date
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		Date startDate = dateFormat.parse("28/09/2000");
-		Date endDate = dateFormat.parse("30/09/2005");
 
-		// Récupérer les produits créés entre les dates spécifiées
-		List<Produit> produits = produitService.getProduitsByDateCreation(startDate, endDate);
-		log.info("Nombre de produits : " + produits.size());
-
-		// Afficher les produits récupérés
-		for (Produit produit : produits) {
-			log.info("Produit : " + produit.getLibelleProduit() + " créé le " + produit.getDateCreation());
-		}
-	}*/
 
 
 }

@@ -5,7 +5,6 @@ import com.projet.tpachatproject.entities.DetailFacture;
 import com.projet.tpachatproject.entities.Facture;
 import com.projet.tpachatproject.entities.Produit;
 import com.projet.tpachatproject.repositories.FactureRepository;
-import com.projet.tpachatproject.services.FactureServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +20,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class FactureServiceImplTest{
+ class FactureServiceImplTest{
 
     @Mock
     private FactureRepository factureRepository;
@@ -38,7 +37,7 @@ public class FactureServiceImplTest{
 
     @BeforeEach
     void setUp() {
-        // Set up test data
+
         regularCategory = new CategorieProduit();
         regularCategory.setLibelleCategorie("REGULAR");
 

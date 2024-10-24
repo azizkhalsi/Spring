@@ -3,7 +3,6 @@ package com.projet.tpachatproject.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.commons.lang3.builder.ToStringExclude;
 
 import java.io.Serializable;
 import java.util.Date;

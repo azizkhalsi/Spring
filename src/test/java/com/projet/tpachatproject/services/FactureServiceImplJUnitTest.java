@@ -13,25 +13,25 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class) // Enable Mockito
-public class FactureServiceImplJUnitTest {
+@ExtendWith(MockitoExtension.class)
+ class FactureServiceImplJUnitTest {
 
     @InjectMocks
-    private FactureServiceImpl factureService; // Inject mocks into the service
+    private FactureServiceImpl factureService;
 
     @Mock
-    private FactureRepository factureRepository; // Mock the repository
+    private FactureRepository factureRepository;
 
-    // Set up method to initialize the mocks
+
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this); // Initialize mocks
-        System.out.println("FactureServiceImpl initialized successfully for testing.");
+        MockitoAnnotations.openMocks(this);
+
     }
 
     // Simple test for adding a facture and asserting values
     @Test
-    public void testAddFacture() {
+     void testAddFacture() {
         // Create a new facture instance
         Facture facture = new Facture();
         facture.setMontantFacture(5000.0f);  // Setting the total amount of the facture
@@ -64,30 +64,38 @@ public class FactureServiceImplJUnitTest {
 
     // Test for illegal argument when a negative facture amount is involved using assertThrows in JUnit 5
     @Test
-    public void testAddFacture_invalidData() {
+     void testAddFacture_invalidData() {
         Facture facture = new Facture();
-        facture.setMontantFacture(-1000);  // Negative amount (invalid)
+        facture.setMontantFacture(-1000); // Negative amount (invalid)
 
         System.out.println("Attempting to create a facture with an invalid montantFacture (-1000).");
 
-        // Simulate expected exception when invalid data is encountered
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            // Business logic for exception raising
-            if (facture.getMontantFacture() < 0) {
-                System.out.println("Invalid Facture detected: montantFacture < 0");
-                throw new IllegalArgumentException("Invalid Facture amount");
-            }
-        });
+        // Simulate expected exception in one invocation
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> validateFacture(facture));
 
         // Detailed output for the thrown exception
         System.out.println("Exception thrown: " + exception.getMessage());
         assertEquals("Invalid Facture amount", exception.getMessage());
+
         System.out.println("Assertion passed for exception message.");
+    }
+
+    /**
+     * Helper method to validate a Facture.
+     * It throws an IllegalArgumentException if the Facture data is invalid.
+     *
+     * @param facture the Facture to validate
+     */
+    private void validateFacture(Facture facture) {
+        if (facture.getMontantFacture() < 0) {
+            System.out.println("Invalid Facture detected: montantFacture < 0");
+            throw new IllegalArgumentException("Invalid Facture amount");
+        }
     }
 
     // Test for pourcentage recouvrement
     @Test
-    public void testPourcentageRecouvrement() {
+     void testPourcentageRecouvrement() {
         // Suppose this is how we get recovery percentage, but simplified
         float totalFactures = 10000.0f;
         float totalRecouvrement = 7000.0f;
@@ -108,7 +116,7 @@ public class FactureServiceImplJUnitTest {
     }
 
     @Test
-    public void testFactureCalculationWithMultipleProducts() {
+     void testFactureCalculationWithMultipleProducts() {
         Facture facture = new Facture();
         facture.setMontantFacture(10000.0f); // Simulate a facture with multiple product totals
         facture.setMontantRemise(1000.0f);   // Apply a discount

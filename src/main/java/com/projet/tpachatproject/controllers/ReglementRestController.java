@@ -29,14 +29,14 @@ public class ReglementRestController {
     @PostMapping("/add-reglement")
     @ResponseBody
     public Reglement addReglement(@RequestBody Reglement r) {
-        Reglement reglement = reglementService.addReglement(r);
-        return reglement;
+            return reglementService.addReglement(r);
+
     }
     @GetMapping("/retrieve-all-reglements")
     @ResponseBody
     public List<Reglement> getReglement() {
-        List<Reglement> list = reglementService.retrieveAllReglements();
-        return list;
+        return reglementService.retrieveAllReglements();
+
     }
 
     // http://localhost:8089/SpringMVC/reglement/retrieve-reglement/8
