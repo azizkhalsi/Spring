@@ -4,7 +4,7 @@ package com.projet.tpachatproject.services;
 import com.projet.tpachatproject.entities.SecteurActivite;
 import com.projet.tpachatproject.repositories.SecteurActiviteRepository;
 import lombok.AllArgsConstructor;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,15 +33,15 @@ public class SecteurActiviteServiceImpl implements ISecteurActiviteService{
 	}
 
 	@Override
-	public SecteurActivite updateSecteurActivite(SecteurActivite saa) {
-		secteurActiviteRepository.save(saa);
-		return saa;
+	public SecteurActivite updateSecteurActivite(SecteurActivite sa) {
+		secteurActiviteRepository.save(sa);
+		return sa;
 	}
 
 	@Override
 	public SecteurActivite retrieveSecteurActivite(Long id) {
-			return secteurActiviteRepository.findById(id).orElse(null);
-
+		SecteurActivite secteurActivite = secteurActiviteRepository.findById(id).orElse(null);
+		return secteurActivite;
 	}
 
 }

@@ -25,7 +25,7 @@ public class Stock implements Serializable {
 	@OneToMany(mappedBy = "stock",fetch = FetchType.EAGER)
 	@JsonIgnore
 	private Set<Produit> produits;
-	public Stock(String libelleStock, Integer qte, Integer qteMin) {
+	public Stock(long l, String libelleStock, Integer qte, Integer qteMin) {
 		super();
 		this.libelleStock = libelleStock;
 		this.qte = qte;

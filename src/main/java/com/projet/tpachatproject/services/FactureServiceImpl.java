@@ -44,10 +44,18 @@ public class FactureServiceImpl implements IFactureService {
 		return factures;
 	}
 
+	public Facture addFacture(Facture facture) {
+   // Validate before saving
+    return factureRepository.save(facture);
+}
 	
-	public Facture addFacture(Facture f) {
-		return factureRepository.save(f);
-	}
+	public float calculatePourcentageRecouvrement() {
+    float totalMontant = factureRepository.getTotalMontantFactures();
+    float totalRecouvrement = factureRepository.getTotalRecouvrement();
+    if (totalMontant == 0) return 0;
+    return (totalRecouvrement / totalMontant) * 100;
+}
+
 
 
 

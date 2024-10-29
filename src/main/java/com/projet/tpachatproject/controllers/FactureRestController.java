@@ -27,8 +27,8 @@ public class FactureRestController {
     @GetMapping("/retrieve-all-factures")
     @ResponseBody
     public List<Facture> getFactures() {
-        return factureService.retrieveAllFactures();
-
+        List<Facture> list = factureService.retrieveAllFactures();
+        return list;
     }
 
     // http://localhost:8089/SpringMVC/facture/retrieve-facture/8
@@ -42,8 +42,8 @@ public class FactureRestController {
     @PostMapping("/add-facture")
     @ResponseBody
     public Facture addFacture(@RequestBody Facture f) {
-        return factureService.addFacture(f);
-
+        Facture facture = factureService.addFacture(f);
+        return facture;
     }
 
     /*

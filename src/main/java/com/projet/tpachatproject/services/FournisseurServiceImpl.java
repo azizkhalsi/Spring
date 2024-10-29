@@ -19,23 +19,18 @@ import java.util.List;
 @Slf4j
 public class FournisseurServiceImpl implements IFournisseurService {
 
-	private final FournisseurRepository fournisseurRepository;
-	private final DetailFournisseurRepository detailFournisseurRepository;
-	private final SecteurActiviteRepository secteurActiviteRepository;
-
-	// Constructor Injection
 	@Autowired
-	public FournisseurServiceImpl(FournisseurRepository fournisseurRepository,
-							DetailFournisseurRepository detailFournisseurRepository,
-							SecteurActiviteRepository secteurActiviteRepository) {
-		this.fournisseurRepository = fournisseurRepository;
-		this.detailFournisseurRepository = detailFournisseurRepository;
-		this.secteurActiviteRepository = secteurActiviteRepository;
-	}
+	FournisseurRepository fournisseurRepository;
+	@Autowired
+	DetailFournisseurRepository detailFournisseurRepository;
+	@Autowired
+	ProduitRepository produitRepository;
+	@Autowired
+	SecteurActiviteRepository secteurActiviteRepository;
 
 	@Override
 	public List<Fournisseur> retrieveAllFournisseurs() {
-		List<Fournisseur> fournisseurs = fournisseurRepository.findAll();
+		List<Fournisseur> fournisseurs = (List<Fournisseur>) fournisseurRepository.findAll();
 		for (Fournisseur fournisseur : fournisseurs) {
 			log.info(" fournisseur : " + fournisseur);
 		}
@@ -76,8 +71,8 @@ public class FournisseurServiceImpl implements IFournisseurService {
 	@Override
 	public Fournisseur retrieveFournisseur(Long fournisseurId) {
 
-		return fournisseurRepository.findById(fournisseurId).orElse(null);
-
+		Fournisseur fournisseur = fournisseurRepository.findById(fournisseurId).orElse(null);
+		return fournisseur;
 	}
 
 
