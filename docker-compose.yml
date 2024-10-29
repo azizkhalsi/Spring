@@ -15,7 +15,7 @@ services:
   app-achat: 
     depends_on:
       - mysqldb
-    image: alarassaa/repo1:tpachattag
+    image: khalsiaziz/repo1:tpachattag
     #build : ./
     restart: on-failure
     ports:
