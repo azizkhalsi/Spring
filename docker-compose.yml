@@ -22,14 +22,27 @@ services:
       - 8089:8089
     environment:
       SPRING_APPLICATION_JSON: '{
-        "spring.datasource.url"  : "jdbc:mysql://mysqldb:3306/tpAchat?createDatabaseIfNotExist=true",
+        "spring.datasource.url"  : "jdbc:mysql://mysqldb:3306/achat_db?createDatabaseIfNotExist=true",
         "spring.datasource.username" : "root",
-        "spring.datasource.password" : root,
+        "spring.datasource.password" : "root",
         "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MySQL8Dialect",
         "spring.jpa.hibernate.ddl-auto" : "update"
       }'
     stdin_open: true
     tty: true
-
+  
+  sonarqube:
+    image: sonarqube:8.9.7-community
+    restart: unless-stopped
+    ports:
+      - 9000:9000
+      - 9092:9092
+    volumes:
+      - 'SonarQube_data:/opt/SonarQube/data'
+      - 'SonarQube_extensions:/opt/SonarQube/extensions'
+      - 'SonarQube_logs:/opt/SonarQube/logs'
 volumes:
-  db :
+  db:
+  SonarQube_data:
+  SonarQube_extensions:
+  SonarQube_logs:
