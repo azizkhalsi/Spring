@@ -31,11 +31,7 @@ services:
       - 9090:9090
     volumes:
       - prometheus_data:/prometheus
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml 
-    depends_on:
-      - app-achat  # Ensure Prometheus waits for the app to start
-    networks:
-      - app-network
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
 
   grafana:
     image: grafana/grafana
@@ -52,6 +48,3 @@ volumes:
   SonarQube_logs:
   prometheus_data:
   grafana_data:
-
-networks:
-  app-network:
