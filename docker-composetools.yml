@@ -2,32 +2,29 @@ version: "3.8"
 
 services:
   mysqldb:
-    container_name: projetspringcd-mysqldb-1  # Use existing MySQL container name
-    image: mysql:8.2.0
+    image: mysql:8.2.0 
     restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_ALLOW_EMPTY_PASSWORD=no
-      - MYSQL_DATABASE=achat_db
+      - MYSQL_DATABASE=achat_db 
     ports:
       - 3306:3306
     volumes:
       - db:/var/lib/mysql
 
   sonarqube:
-    container_name: mystifying_hermann
     image: sonarqube:8.9.7-community
     restart: unless-stopped
     ports:
       - 9000:9000
       - 9092:9092
     volumes:
-      - SonarQube_data:/opt/SonarQube/data
-      - SonarQube_extensions:/opt/SonarQube/extensions
-      - SonarQube_logs:/opt/SonarQube/logs
+      - 'SonarQube_data:/opt/SonarQube/data'
+      - 'SonarQube_extensions:/opt/SonarQube/extensions'
+      - 'SonarQube_logs:/opt/SonarQube/logs'
 
   prometheus:
-    container_name: prometheus  
     image: prom/prometheus
     restart: unless-stopped
     ports:
@@ -36,7 +33,6 @@ services:
       - prometheus_data:/prometheus
 
   grafana:
-    container_name: grafana  
     image: grafana/grafana
     restart: unless-stopped
     ports:
