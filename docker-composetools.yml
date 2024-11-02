@@ -52,3 +52,6 @@ volumes:
   SonarQube_logs:
   prometheus_data:
   grafana_data:
+
+networks:
+  app-network:
