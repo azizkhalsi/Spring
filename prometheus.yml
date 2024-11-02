@@ -4,5 +4,4 @@ global:
 scrape_configs:
   - job_name: 'spring-app'
     static_configs:
-      - targets: ['app-achat:8089']  # The target should match the name of your Spring app service
-
+      - targets: ['app-achat:8089']  # Match the service name and port
