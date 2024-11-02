@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   mysqldb:
-    image: mysql:8.2.0 
+    image: mysql:8.2.0
     restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=root
@@ -17,7 +17,6 @@ services:
     depends_on:
       - mysqldb
     image: khalsiaziz/repo1:tpachattag
-    #build : ./
     restart: on-failure
     ports:
       - 8089:8089
@@ -31,6 +30,17 @@ services:
       }'
     stdin_open: true
     tty: true
-
+  
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090 # Expose the Prometheus dashboard (default is 9090)
+    depends_on:
+      - app-achat
+  
 volumes:
   db:
