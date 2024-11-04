@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -24,14 +25,19 @@ public class Fournisseur implements Serializable {
 	private Long idFournisseur;
 	private String code;
 	private String libelle;
+
 	@Enumerated(EnumType.STRING)
 	private CategorieFournisseur  categorieFournisseur;
+
 	@OneToMany(mappedBy="fournisseur")
 	@JsonIgnore
 	private Set<Facture> factures;
+
     @ManyToMany
     @JsonIgnore
-    private Set<SecteurActivite> secteurActivites;
+
+    private Set<SecteurActivite> secteurActivites= new HashSet<>();
+  
     @OneToOne(cascade= CascadeType.ALL,fetch=FetchType.EAGER)
     private DetailFournisseur detailFournisseur;
     
