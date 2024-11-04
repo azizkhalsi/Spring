@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -30,5 +31,16 @@ public class Reglement implements Serializable{
 	@ManyToOne
 	@JsonIgnore
 	private Facture facture;
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Reglement reglement)) return false;
+        return Objects.equals(getIdReglement(), reglement.getIdReglement());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getIdReglement());
+	}
 }
