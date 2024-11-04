@@ -18,8 +18,6 @@ services:
     volumes:
       - prometheus_data:/prometheus
       - ./prometheus.yml:/etc/prometheus/prometheus.yml 
-    depends_on:
-      - app-achat  # Ensure Prometheus waits for the app to start
 
   grafana:
     image: grafana/grafana
