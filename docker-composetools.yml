@@ -1,18 +1,4 @@
-version: "3.8"
-
 services:
-  mysqldb:
-    image: mysql:8.2.0 
-    restart: unless-stopped
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_ALLOW_EMPTY_PASSWORD=no
-      - MYSQL_DATABASE=achat_db 
-    ports:
-      - 3306:3306
-    volumes:
-      - db:/var/lib/mysql
-
   sonarqube:
     image: sonarqube:8.9.7-community
     restart: unless-stopped
@@ -34,8 +20,6 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml 
     depends_on:
       - app-achat  # Ensure Prometheus waits for the app to start
-    networks:
-      - app-network
 
   grafana:
     image: grafana/grafana

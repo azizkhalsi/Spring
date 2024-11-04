@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   mysqldb:
     image: mysql:8.2.0 
@@ -16,7 +14,7 @@ services:
   app-achat: 
     depends_on:
       - mysqldb
-    image: khalsiaziz/repo1:tpachattag
+    image: dhafeur/tp-achat
     restart: on-failure
     ports:
       - 8089:8089
@@ -30,16 +28,6 @@ services:
       }'
     stdin_open: true
     tty: true
-
-  prometheus:
-    image: prom/prometheus
-    restart: unless-stopped
-    ports:
-      - 9090:9090
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    depends_on:
-      - app-achat
 
 volumes:
   db:
