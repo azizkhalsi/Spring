@@ -10,20 +10,14 @@
     </parent>
     <groupId>com.projet</groupId>
     <artifactId>tpAchatProject</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>tpAchatProject</name>
     <description>tpAchatProject</description>
     <url/>
     <properties>
         <java.version>17</java.version>
     </properties>
-    <distributionManagement>
-        <repository>
-            <id>deploymentRepo</id>
-            <name>Nexus Repository</name>
-            <url>http://192.168.33.10:8081/repository/RepoTpAchat/</url>
-        </repository>
-    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -90,6 +84,14 @@
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>deploymentRepo</id>
+            <name>Nexus Repository</name>
+            <url>http://192.168.33.10:8081/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <plugins>
