@@ -17,19 +17,7 @@ pipeline {
         }
 
 
-        // Stage 2: Run Docker Compose for Spring Project
-        stage('Docker Compose Spring Project') {
-            steps {
-                sh 'docker-compose -f docker-compose.yml up -d'
-            }
-        }
 
-        // Stage 3: Run Docker Compose for Tools
-        stage('Docker Compose Tools') {
-            steps {
-                sh 'docker-compose -f docker-composetools.yml up -d'
-            }
-        }
 
         stage('Build with Maven') {
             steps {
