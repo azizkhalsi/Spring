@@ -20,7 +20,7 @@ pipeline {
                     stage('MVN SonarQube') {
                         steps {
                             script {
-                                withSonarQubeEnv('sonarserver') {
+                                withSonarQubeEnv('sq1') {
                                     withCredentials([string(credentialsId: 'jenkins-sonar', variable: 'SONAR_TOKEN')]) {
                                         sh '''
                                             mvn sonar:sonar \
