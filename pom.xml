@@ -91,7 +91,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>com.projet.tpachatproject.TpAchatProjectApplication</mainClass>
-                    <finalName>tpAchatBuild</finalName>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
