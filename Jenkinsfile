@@ -27,6 +27,7 @@ pipeline {
                                         -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
                                 '''
                             }
+                           }
                         }
                     }
                 }
