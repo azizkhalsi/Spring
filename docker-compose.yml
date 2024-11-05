@@ -17,7 +17,7 @@ services:
     image: dhafeur/tp-achat
     restart: on-failure
     ports:
-      - 8089:8089
+      - 8090:8089
     environment:
       SPRING_APPLICATION_JSON: '{
         "spring.datasource.url"  : "jdbc:mysql://mysqldb:3306/achat_db?createDatabaseIfNotExist=true",
