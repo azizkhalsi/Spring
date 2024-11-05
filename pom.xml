@@ -103,7 +103,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.example.MainClass</mainClass> <!-- Replace with your actual main class -->
+                            <mainClass>com.projet.tpachatproject.TpAchatProjectApplication</mainClass> <!-- Replace with your actual main class -->
                         </manifest>
                     </archive>
                 </configuration>
