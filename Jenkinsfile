@@ -8,7 +8,7 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'main', credentialsId: 'githubcred', url: 'https://github.com/azizkhalsi/Spring.git'
+                git branch: 'raefkhalifa', credentialsId: 'githubcred', url: 'https://github.com/azizkhalsi/Spring.git'
             }
         }
     }
