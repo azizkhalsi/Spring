@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    tools {
+            maven 'M2_HOME'       // Ensure "M2_HOME" is configured in Jenkins
+            jdk 'JAVA_HOME'       // Ensure "JAVA_HOME" is configured in Jenkins
+        }
     triggers {
         // Poll GitHub for changes, or use GitHub webhook
         githubPush()
@@ -13,36 +17,7 @@ pipeline {
         }
     }
 
-     // Stage 2: Run Docker Compose for Spring Project
-            stage('Docker Compose Spring Project') {
-                steps {
-                    sh 'docker-compose -f docker-compose.yml up -d'
-                }
-            }
 
-            // Stage 3: Run Docker Compose for Tools
-            stage('Docker Compose Tools') {
-                steps {
-                    sh 'docker-compose -f docker-composetools.yml up -d'
-                }
-            }
-
-            stage('Build with Maven') {
-                steps {
-                    sh 'mvn clean compile jacoco:report'
-                }
-            }
-
-            stage('Test Unitaires et Jacoco') {
-                steps {
-                    sh 'mvn clean test'
-                }
-            }
-            stage('Build') {
-                steps {
-                    sh 'mvn package'
-                }
-            }
 
     // Stage 5: Analyze Code with SonarQube
             stage('MVN SonarQube') {
