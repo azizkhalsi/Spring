@@ -14,7 +14,7 @@ services:
   app-achat: 
     depends_on:
       - mysqldb
-    image: dhafeur/tp-achat
+    image: dhaferankoud/tpachatproject
     restart: on-failure
     ports:
       - 8090:8089
