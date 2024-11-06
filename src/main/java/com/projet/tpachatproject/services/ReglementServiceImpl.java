@@ -1,6 +1,7 @@
 package com.projet.tpachatproject.services;
 
 
+import com.projet.tpachatproject.entities.Facture;
 import com.projet.tpachatproject.entities.Reglement;
 import com.projet.tpachatproject.repositories.FactureRepository;
 import com.projet.tpachatproject.repositories.ReglementRepository;
@@ -29,6 +30,8 @@ public class ReglementServiceImpl implements IReglementService {
 
 	@Override
 	public Reglement addReglement(Reglement r) {
+		Facture f = factureRepository.save(r.getFacture());
+		r.setFacture(f);
         reglementRepository.save(r);
 		return r;
 	}
