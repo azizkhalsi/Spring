@@ -1,15 +1,4 @@
 services:
-  sonarqube:
-    image: sonarqube:8.9.7-community
-    restart: unless-stopped
-    ports:
-      - 9000:9000
-      - 9092:9092
-    volumes:
-      - 'SonarQube_data:/opt/SonarQube/data'
-      - 'SonarQube_extensions:/opt/SonarQube/extensions'
-      - 'SonarQube_logs:/opt/SonarQube/logs'
-
   prometheus:
     image: prom/prometheus
     restart: unless-stopped
@@ -29,8 +18,5 @@ services:
 
 volumes:
   db:
-  SonarQube_data:
-  SonarQube_extensions:
-  SonarQube_logs:
   prometheus_data:
   grafana_data:
