@@ -4,4 +4,4 @@ global:
 scrape_configs:
   - job_name: 'spring-app'
     static_configs:
-      - targets: ['app-achat:8089']
+      - targets: ['192.168.33.10:8089']
