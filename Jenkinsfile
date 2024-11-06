@@ -1,16 +1,10 @@
+                        
 pipeline {
     agent any
-
-    environment {
+       environment {
         IMAGE_NAME = "hadil-app"
         DOCKER_HUB_REPO = "hamamou99/${IMAGE_NAME}"
     }
-
-   
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
-                       
-pipeline {
-    agent any
     triggers {
         // Poll GitHub for changes, or use GitHub webhook
         githubPush()
