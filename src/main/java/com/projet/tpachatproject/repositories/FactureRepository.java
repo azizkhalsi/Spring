@@ -18,7 +18,7 @@ public interface FactureRepository extends JpaRepository<Facture, Long> {
 	@Query("SELECT SUM(f.montantFacture) FROM Facture f WHERE f.archivee = false")
 	float getTotalMontantFactures();
 
-	@Query("SELECT SUM(f.montantRecouvrement) FROM Facture f WHERE f.archivee = false")
+	@Query("SELECT SUM(f.montantRemise) FROM Facture f WHERE f.archivee = false")
 	float getTotalRecouvrement();
 	
 	@Query("SELECT f FROM Facture f where f.fournisseur=:fournisseur and f.archivee=false")
