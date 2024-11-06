@@ -16,7 +16,7 @@ services:
   app-achat: 
     depends_on:
       - mysqldb
-    image: khalsiaziz/repo1:tpachattag
+    image: hamamou99/hadillamamou:1.0
     restart: on-failure
     ports:
       - 8089:8089
