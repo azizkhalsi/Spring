@@ -5,3 +5,8 @@ scrape_configs:
   - job_name: 'spring-app'
     static_configs:
       - targets: ['192.168.33.10:8089']
+
+  - job_name: 'jenkins'
+    metrics_path: '/prometheus'   # Ensure Jenkins Prometheus metrics plugin is set to this path
+    static_configs:
+      - targets: ['192.168.33.10:8080']
