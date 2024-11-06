@@ -1,14 +1,6 @@
 services:
   
 
-  grafana:
-    image: grafana/grafana
-    restart: unless-stopped
-    ports:
-      - 3000:3000
-    volumes:
-      - grafana_data:/var/lib/grafana
-
 volumes:
   db:
   prometheus_data:
