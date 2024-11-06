@@ -5,10 +5,7 @@ pipeline {
         IMAGE_NAME = "hadil-app"
         DOCKER_HUB_REPO = "hamamou99/${IMAGE_NAME}"
     }
-    triggers {
-        // Poll GitHub for changes, or use GitHub webhook
-        githubPush()
-    }
+   
     stages {
  
         stage('Checkout Code') {
