@@ -87,8 +87,8 @@ pipeline {
                         protocol: 'http',
                         nexusUrl: '192.168.33.10:8081',
                         groupId: 'com.projet',
-                        version: '0.0.1',
-                        repository: 'springproject',
+                        version: '0.0.1-SNAPSHOT',
+                        repository: 'maven-snapshots',
                         credentialsId: 'NEXUS_CRED',
                         artifacts: [
                             [
