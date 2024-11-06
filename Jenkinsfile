@@ -6,37 +6,56 @@ pipeline {
         DOCKER_HUB_REPO = "hamamou99/${IMAGE_NAME}"
     }
 
-    stages {
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    sh "docker build -t ${IMAGE_NAME} ."
-                }
-            }
-        }
-
-        stage('Tag Docker Image') {
-            steps {
-                script {
-                    sh "docker tag ${IMAGE_NAME} ${DOCKER_HUB_REPO}:latest"
-                }
-            }
-        }
-
-        stage('Push Docker Image to Docker Hub') {
-            steps {
-                script {
+   
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
-                        sh '''
-                        echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
-                        docker push ${DOCKER_HUB_REPO}:latest
-                        '''
-                    }
-                }
+                       
+pipeline {
+    agent any
+    triggers {
+        // Poll GitHub for changes, or use GitHub webhook
+        githubPush()
+    }
+    stages {
+ 
+        stage('Checkout Code') {
+            steps {
+                git branch: 'hadil-amamou', credentialsId: 'github-creds', url: 'https://github.com/azizkhalsi/Spring.git'
             }
         }
-
-        stage('Analyze Code with SonarQube') {
+ 
+        // Stage 2: Run Docker Compose for Spring Project
+        stage('Docker Compose Spring Project') {
+            steps {
+                sh 'docker-compose -f docker-compose.yml up -d'
+            }
+        }
+ 
+        // Stage 3: Run Docker Compose for Tools
+        stage('Docker Compose Tools') {
+            steps {
+                sh 'docker-compose -f docker-composetools.yml up -d'
+            }
+        }
+ 
+        stage('Build with Maven') {
+            steps {
+                sh 'mvn clean compile jacoco:report'
+            }
+        }
+ 
+        stage('Test Unitaires et Jacoco') {
+            steps {
+                sh 'mvn clean test'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'mvn package' 
+            }
+        }
+ 
+        // Stage 5: Analyze Code with SonarQube
+        stage('MVN SonarQube') {
             steps {
                 script {
                     withSonarQubeEnv('sonarserver') {
@@ -53,7 +72,8 @@ pipeline {
                 }
             }
         }
-
+ 
+        // Stage for Quality Gate
         stage('Quality Gate') {
             steps {
                 script {
@@ -66,17 +86,40 @@ pipeline {
                 }
             }
         }
+ 
+        // Stage 3: Deploy to Nexus
+        stage('Deploy to Nexus') {
+            steps {
+                script {
+                    nexusArtifactUploader(
+                        nexusVersion: 'nexus3',
+                        protocol: 'http',
+                        nexusUrl: '192.168.33.10:8081',
+                        groupId: 'com.projet',
+                        version: '0.0.1',
+                        repository: 'springproject',
+                        credentialsId: 'NEXUS_CRED',
+                        artifacts: [
+                            [
+                                artifactId: 'tpAchatProject',
+                                classifier: '',
+                                file: 'target/tpAchatBuild.jar',
+                                type: 'jar'
+                            ]
+                        ]
+                    )
+                }
+            }
+            post {
+                success {
+                    echo 'Deployment to Nexus successful.'
+                }
+                failure {
+                    echo 'Error during Nexus deployment.'
+                }
+            }
+        }
     }
-
-    post {
-        success {
-            echo "Docker image pushed successfully to Docker Hub."
-        }
-        failure {
-            echo "Pipeline failed. Please check the logs."
-        }
-        cleanup {
-            sh "docker system prune -f"
-        }
-    }
+ 
+ 
 }
