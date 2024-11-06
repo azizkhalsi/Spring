@@ -20,6 +20,6 @@ WORKDIR /app
 EXPOSE 8089
 
 RUN apk add --no-cache curl \
-    && curl -u ${NEXUS_USERNAME}:${NEXUS_PASSWORD} -O http://192.168.136.131:8081/repository/springproject/com/projet/tpAchatProject/0.0.1-SNAPSHOT/tpAchatProject-0.0.1-20241027.114618-1.jar
+    && curl -u ${NEXUS_USERNAME}:${NEXUS_PASSWORD} -O http://192.168.136.131:8081/repository/maven-releases/com/projet/tpAchatProject/0.0.2-SNAPSHOT/tpAchatProject-0.0.2-20241027.114618-1.jar
 
-ENTRYPOINT ["java", "-jar", "tpAchatProject-0.0.1-20241027.114618-1.jar"]
+ENTRYPOINT ["java", "-jar", "tpAchatProject-0.0.2-20241027.114618-1.jar"]
